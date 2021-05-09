@@ -1,0 +1,74 @@
+server:
+  #application:
+    #name: car-service
+  port: 8545 #443
+  forward-headers-strategy: FRAMEWORK
+  #ssl:
+    #key-store: "classpath:signingservice.p12"
+    #key-store-password: "signingservice"
+    #key-store-type: "PKCS12"
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
+spring:
+  profiles:
+    active: "prod"
+  security:
+    user:
+      name: "admin"
+      password: "signingservice"
+management:
+  #server:
+    #address: 127.0.0.1
+    #port: 8081
+  security:
+    enable: false
+    #role: SUPERUSER
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      group:
+        web3service:
+          include: "Web3Service"
+info:
+  build:
+    artifact: @project.artifactId@
+    name: @project.name@
+    description: @project.description@
+    version: @project.version@
+  app:
+    name: "ethereum-signing-service"
+    description: "Ethereum Signing Service"
+    version: "1.0.0"
+#nodeAddress: mainnet.infura.io/ws/v3/b30d8f06ddb6423eb4d8bfaf5cf78e32
+nodeAddress: localhost:7545
+privateKey: acb2cfe8f39bdb84f64acd940ccda4ac2d7639e92c02bc267e663969c05bf3a5
+productContractAddress: 9F9d520a11BC57086F7b51a6D1158f8AC061E60D
+walletDirectoryPath: "/private/tmp"
+jwt:
+  header: Authorization
+  secret: philipp
+  expiration: 7200
+cors:
+  allow:
+    origin: "*"
+---
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      username: mongoadmin
+      password: mongosecret
+      database: walletdb
+nodeAddress: localhost:7545
