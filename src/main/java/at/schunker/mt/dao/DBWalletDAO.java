@@ -38,9 +38,10 @@ public class DBWalletDAO implements CredentialsDAO {
         if (address.startsWith("0x")) {
             address = address.substring(2);
         }
-        logger.info("createWallet {}", address);
-        Optional<WalletFile> optWalletFile = this.walletRepository.findByAddress(address);
 
+        logger.info("create wallet for address {}", address);
+
+        Optional<WalletFile> optWalletFile = this.walletRepository.findByAddress(address);
         if (optWalletFile.isPresent()) {
             logger.info("{} already saved", address);
             logger.info("{} already saved", publicKey);
@@ -52,19 +53,46 @@ public class DBWalletDAO implements CredentialsDAO {
         WalletFile walletFile = Wallet.createStandard(password, keyPair);
 
         this.walletRepository.save(walletFile);
-        //WalletFile.Crypto crypto = walletFile.getCrypto();
-        //WalletUtils.loadJsonCredentials(password, json);
-        //WalletUtils.loadCredentials(password, json);
     }
 
     /**
      * consider Exception
      * @param password
-     * @param publicKey
+     * @param address
      * @return
      */
     @Override
-    public Credentials loadCredentials(String password, String publicKey) {
-        return null;
+    public Credentials loadCredentials(String password, String address) {
+        if (this.walletRepository == null) {
+            logger.info("walletRepository is null");
+            return null;
+        }
+
+        if (address.startsWith("0x")) {
+            address = address.substring(2);
+        }
+
+        Optional<WalletFile> optionalWalletFile = this.walletRepository.findByAddress(address);
+
+        if (!optionalWalletFile.isPresent()) {
+            logger.info("no wallet found for address {}", address);
+            return null;
+        }
+
+        WalletFile walletFile = optionalWalletFile.get();
+        //WalletFile.Crypto crypto = walletFile.getCrypto();
+        //WalletUtils.loadJsonCredentials(password, json);
+        //WalletUtils.loadCredentials(password, json);
+
+        ECKeyPair ecKeyPair = null;
+
+        try {
+            ecKeyPair = Wallet.decrypt(password, walletFile);
+        } catch (CipherException ex) {
+            return null;
+        }
+
+        Credentials credentials = Credentials.create(ecKeyPair);
+        return credentials;
     }
 }

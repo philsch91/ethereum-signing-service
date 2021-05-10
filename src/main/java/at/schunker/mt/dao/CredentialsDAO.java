@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface CredentialsDAO {
     public abstract void createWallet(String password, Credentials credentials) throws CipherException, IOException;
-    public abstract Credentials loadCredentials(String password, String publicKey);
+    public abstract Credentials loadCredentials(String password, String address);
 }

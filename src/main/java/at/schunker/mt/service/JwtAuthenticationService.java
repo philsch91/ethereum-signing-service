@@ -25,7 +25,7 @@ public class JwtAuthenticationService {
         //this.passwordEncoder = passwordEncoder;
     }
 
-    public String generateJwtToken(String email, String password){
+    public String generateJwtToken(String address, String password) throws JwtAuthenticationException {
         log.info("generateJwtToken");
         log.info(password);
         /*
@@ -44,14 +44,15 @@ public class JwtAuthenticationService {
         }
         */
 
-        Credentials credentials = this.walletDAO.loadCredentials(password, email);
+        //TODO: handle exceptions
+        Credentials credentials = this.walletDAO.loadCredentials(password, address);
 
         if (credentials == null) {
             log.info("incorrect password");
             throw new JwtAuthenticationException("incorrect password");
         }
 
-        String token = tokenService.generateToken(email);
+        String token = this.tokenService.generateToken(address);
         log.info("JwtAuthenticationService.token: " + token);
 
         return token;

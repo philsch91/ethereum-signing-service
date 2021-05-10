@@ -23,7 +23,8 @@ public class WalletRepositoryImpl implements WalletRepositoryExtension {
         }
 
         for (WalletFile walletFile : walletFileList) {
-            if (walletFile.getAddress().equals(address)) {
+            //logger.info("walletfile address: {}", walletFile.getAddress());
+            if (walletFile.getAddress().equalsIgnoreCase(address)) {
                 return Optional.of(walletFile);
             }
         }

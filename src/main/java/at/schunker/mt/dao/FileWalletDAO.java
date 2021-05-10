@@ -80,7 +80,7 @@ public class FileWalletDAO implements CredentialsDAO {
     }
 
     @Override
-    public Credentials loadCredentials(String password, String publicKey) {
+    public Credentials loadCredentials(String password, String address) {
         return null;
     }
 }
