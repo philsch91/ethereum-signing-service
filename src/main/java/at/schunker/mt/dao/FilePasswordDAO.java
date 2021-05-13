@@ -82,7 +82,9 @@ public class FilePasswordDAO implements PasswordDAO {
         Path passwordFilePath = Paths.get(fileName);
         String password = null;
         try {
-            password = Files.readString(passwordFilePath);
+            //password = Files.readString(passwordFilePath);    // Java 13
+            byte[] passwordBytes = Files.readAllBytes(passwordFilePath);
+            password = new String(passwordBytes, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             logger.error(ex.getMessage());
             return null;

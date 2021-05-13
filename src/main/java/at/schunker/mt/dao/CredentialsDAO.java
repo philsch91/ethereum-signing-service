@@ -6,6 +6,7 @@ import org.web3j.crypto.Credentials;
 import java.io.IOException;
 
 public interface CredentialsDAO {
-    public abstract void createWallet(String password, Credentials credentials) throws CipherException, IOException;
-    public abstract Credentials loadCredentials(String password, String address);
+    public abstract void createWallet(Credentials credentials, String password) throws CipherException, IOException;
+    public abstract Credentials loadCredentials(String address, String password);
+    public abstract boolean deleteCredentials(String address, String password);
 }

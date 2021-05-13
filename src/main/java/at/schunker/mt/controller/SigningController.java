@@ -1,12 +1,11 @@
 package at.schunker.mt.controller;
 
-import at.schunker.mt.dao.CredentialsDAO;
-import at.schunker.mt.dao.DBWalletDAO;
-import at.schunker.mt.dto.User;
+import at.schunker.mt.exception.AuthenticationForbiddenException;
 import at.schunker.mt.service.JwtAuthenticatedProfile;
 import at.schunker.mt.service.Web3SigningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,11 +33,15 @@ public class SigningController extends BaseRestController {
         JwtAuthenticatedProfile authenticatedProfile = super.getAuthentication();
         String address = authenticatedProfile.getName();
 
+        String signedHexTransaction;
+
         try {
-            this.signingService.signTransaction(address, transaction);
-        } catch (Exception ex) {
+            signedHexTransaction = this.signingService.signTransaction(address, transaction);
+        } catch (AuthenticationForbiddenException ex) {
             log.error(ex.getMessage());
+            throw ex;
         }
 
+        return new ResponseEntity<>(signedHexTransaction, HttpStatus.OK);
     }
 }

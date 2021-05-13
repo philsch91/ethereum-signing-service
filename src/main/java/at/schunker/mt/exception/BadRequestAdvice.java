@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class RegistrationBadRequestAdvice {
+public class BadRequestAdvice {
     @ResponseBody
-    @ExceptionHandler(RegistrationBadRequestException.class)
+    @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity badRegistrationHandler(RegistrationBadRequestException ex){
-        GenericResponse response = new GenericResponse(400, ex.getMessage());
-
+    public ResponseEntity badRequestHandler(BadRequestException ex){
+        GenericResponse response = new GenericResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

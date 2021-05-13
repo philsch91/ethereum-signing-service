@@ -3,6 +3,7 @@ package at.schunker.mt.service;
 import at.schunker.mt.dao.CredentialsDAO;
 import at.schunker.mt.dao.DBWalletDAO;
 import at.schunker.mt.dao.PasswordDAO;
+import at.schunker.mt.exception.AuthenticationForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class Web3SigningService {
     }
 
     /**
-     * replaces RawTransactionManager
-     * new Web3j().ethSendRawTransaction(String signedHexTransaction).send()
+     * replaces RawTransactionManager(Web3j web3j, Credentials credentials).sendTransaction()
+     * send signed transaction in client: new Web3j().ethSendRawTransaction(String signedHexTransaction).send()
      * @param address an address of the account to be used for signing the rawTransaction
      * @param rawTransaction a RawTransaction instance to be signed
      *                       RawTransaction.createTransaction(
@@ -46,15 +47,15 @@ public class Web3SigningService {
      * @return
      * @throws Exception
      */
-    public String signTransaction(String address, RawTransaction rawTransaction) throws Exception {
+    public String signTransaction(String address, RawTransaction rawTransaction) throws AuthenticationForbiddenException {
         String password = this.passwordDAO.getPassword(address);
         if (password == null) {
             return null;
         }
 
-        Credentials credentials = this.credentialsDAO.loadCredentials(password, address);
+        Credentials credentials = this.credentialsDAO.loadCredentials(address, password);
         if (credentials == null) {
-            throw new Exception("CredentialException");
+            throw new AuthenticationForbiddenException();
         }
 
         //byte[] signedTransaction = TransactionEncoder.signMessage(rawTransaction, ChainIdLong.NONE, credentials)

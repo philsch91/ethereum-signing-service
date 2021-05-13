@@ -24,7 +24,7 @@ public class DBWalletDAO implements CredentialsDAO {
     }
 
     @Override
-    public void createWallet(String password, Credentials credentials) throws CipherException {
+    public void createWallet(Credentials credentials, String password) throws CipherException {
         if (this.walletRepository == null) {
             logger.info("walletRepository is null");
             return;
@@ -41,8 +41,8 @@ public class DBWalletDAO implements CredentialsDAO {
 
         logger.info("create wallet for address {}", address);
 
-        Optional<WalletFile> optWalletFile = this.walletRepository.findByAddress(address);
-        if (optWalletFile.isPresent()) {
+        Optional<WalletFile> optionalWalletFile = this.walletRepository.findByAddress(address);
+        if (optionalWalletFile.isPresent()) {
             logger.info("{} already saved", address);
             logger.info("{} already saved", publicKey);
             return;
@@ -62,7 +62,7 @@ public class DBWalletDAO implements CredentialsDAO {
      * @return
      */
     @Override
-    public Credentials loadCredentials(String password, String address) {
+    public Credentials loadCredentials(String address, String password) {
         if (this.walletRepository == null) {
             logger.info("walletRepository is null");
             return null;
@@ -72,14 +72,12 @@ public class DBWalletDAO implements CredentialsDAO {
             address = address.substring(2);
         }
 
-        Optional<WalletFile> optionalWalletFile = this.walletRepository.findByAddress(address);
-
-        if (!optionalWalletFile.isPresent()) {
+        WalletFile walletFile = this.getWalletFile(address);
+        if (walletFile == null) {
             logger.info("no wallet found for address {}", address);
             return null;
         }
 
-        WalletFile walletFile = optionalWalletFile.get();
         //WalletFile.Crypto crypto = walletFile.getCrypto();
         //WalletUtils.loadJsonCredentials(password, json);
         //WalletUtils.loadCredentials(password, json);
@@ -94,5 +92,38 @@ public class DBWalletDAO implements CredentialsDAO {
 
         Credentials credentials = Credentials.create(ecKeyPair);
         return credentials;
+    }
+
+    @Override
+    public boolean deleteCredentials(String address, String password) {
+        if (address.startsWith("0x")) {
+            address = address.substring(2);
+        }
+
+        Credentials credentials = this.loadCredentials(address, password);
+        if (credentials == null) {
+            return false;
+        }
+        /*
+        WalletFile walletFile = this.getWalletFile(address);
+        if (walletFile == null) {
+            return false;
+        }
+
+        this.walletRepository.delete(walletFile);
+        */
+        boolean deleteResult = this.walletRepository.deleteByAddress(address);
+        return deleteResult;
+    }
+
+    private WalletFile getWalletFile(String address) {
+        Optional<WalletFile> optionalWalletFile = this.walletRepository.findByAddress(address);
+
+        if (!optionalWalletFile.isPresent()) {
+            return null;
+        }
+
+        WalletFile walletFile = optionalWalletFile.get();
+        return walletFile;
     }
 }

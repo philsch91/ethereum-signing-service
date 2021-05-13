@@ -6,11 +6,13 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@Profile("prod")
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
     @Override

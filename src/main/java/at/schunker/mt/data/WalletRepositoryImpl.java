@@ -31,4 +31,16 @@ public class WalletRepositoryImpl implements WalletRepositoryExtension {
 
         return Optional.empty();
     }
+
+    @Override
+    public boolean deleteByAddress(String address) {
+        Optional<WalletFile> optionalWalletFile = this.findByAddress(address);
+        if (!optionalWalletFile.isPresent()) {
+            return false;
+        }
+
+        WalletFile walletFile = optionalWalletFile.get();
+        this.walletRepository.delete(walletFile);
+        return true;
+    }
 }

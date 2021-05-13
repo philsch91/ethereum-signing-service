@@ -42,7 +42,7 @@ public class FileWalletDAO implements CredentialsDAO {
     /** CredentialsDAO */
 
     @Override
-    public void createWallet(String password, Credentials credentials) throws CipherException, IOException {
+    public void createWallet(Credentials credentials, String password) throws CipherException, IOException {
         String publicKey = CredentialUtils.getPublicKeyInCredentials(credentials);
 
         String fileName = this.directoryPath + "/" + publicKey + ".json";
@@ -79,7 +79,12 @@ public class FileWalletDAO implements CredentialsDAO {
     }
 
     @Override
-    public Credentials loadCredentials(String password, String address) {
+    public Credentials loadCredentials(String address, String password) {
         return null;
+    }
+
+    @Override
+    public boolean deleteCredentials(String address, String password) {
+        return false;
     }
 }
