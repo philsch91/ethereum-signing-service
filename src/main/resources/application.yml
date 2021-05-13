@@ -48,9 +48,8 @@ info:
     version: "1.0.0"
 #nodeAddress: mainnet.infura.io/ws/v3/b30d8f06ddb6423eb4d8bfaf5cf78e32
 nodeAddress: localhost:7545
-privateKey: acb2cfe8f39bdb84f64acd940ccda4ac2d7639e92c02bc267e663969c05bf3a5
-productContractAddress: 9F9d520a11BC57086F7b51a6D1158f8AC061E60D
 walletDirectoryPath: "/private/tmp"
+passwordDirectoryPath: "/private/tmp"
 jwt:
   header: Authorization
   secret: philipp

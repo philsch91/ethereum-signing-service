@@ -22,7 +22,6 @@ import java.security.NoSuchProviderException;
 public class FileWalletDAO implements CredentialsDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(FileWalletDAO.class);
-
     private String directoryPath;
 
     public FileWalletDAO(String directoryPath) {
